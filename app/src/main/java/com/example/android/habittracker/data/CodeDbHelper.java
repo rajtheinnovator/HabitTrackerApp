@@ -1,7 +1,5 @@
 package com.example.android.habittracker.data;
-/**
- * Created by ABHISHEK RAJ on 10/9/2016.
- */
+/* Created by ABHISHEK RAJ on 10/9/2016. */
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;

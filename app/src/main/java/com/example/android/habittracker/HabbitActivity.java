@@ -4,6 +4,7 @@ package com.example.android.habittracker;
  */
 
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -21,7 +22,7 @@ import com.example.android.habittracker.data.CodeDbHelper;
 /**
  * Displays list of habittracker that were entered and stored in the app.
  */
-public class CatalogActivity extends AppCompatActivity {
+public class HabbitActivity extends AppCompatActivity {
     private CodeDbHelper mCodeDbHelper;
 
     @Override
@@ -34,14 +35,13 @@ public class CatalogActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(CatalogActivity.this, EditorActivity.class);
+                Intent intent = new Intent(HabbitActivity.this, EditorActivity.class);
                 startActivity(intent);
             }
         });
 
         displayDatabaseInfo();
         mCodeDbHelper = new CodeDbHelper(this);
-        //SQLiteDatabase db = mCodeDbHelper.getReadableDatabase();
     }
 
     /**
@@ -73,7 +73,7 @@ public class CatalogActivity extends AppCompatActivity {
             int practiceHoursColumnIndex = cursor.getColumnIndex(CodeEntry.COLUMN_PRACTICE_HOURS);
             int feelingColumnIndex = cursor.getColumnIndex(CodeEntry.COLUMN_FEELING);
             int modeColumnIndex = cursor.getColumnIndex(CodeEntry.COLUMN_MODE);
-            while (cursor.moveToNext()){
+            while (cursor.moveToNext()) {
                 int currentId = cursor.getInt(idColumnIndex);
                 String currentLanguageName = cursor.getString(languageNameColumnIndex);
                 String currentPracticeHours = cursor.getString(practiceHoursColumnIndex);
@@ -94,7 +94,6 @@ public class CatalogActivity extends AppCompatActivity {
     private void insertCode() {
         // Gets the data repository in write mode
         SQLiteDatabase db = mCodeDbHelper.getWritableDatabase();
-
         // Create a new map of values, where column names are the keys
         ContentValues values = new ContentValues();
         values.put(CodeEntry.COLUMN_LANGUAGE, "JAVA");
@@ -104,6 +103,17 @@ public class CatalogActivity extends AppCompatActivity {
 
         // Insert the new row, returning the primary key value of the new row
         long newRowId = db.insert(CodeEntry.TABLE_NAME, null, values);
+    }
+
+    private void deleteDataBase() {
+//        /*If you want to delete Just the table entries but then _ID will not reset*/
+//        SQLiteDatabase db = mCodeDbHelper.getWritableDatabase();
+//        boolean succeeded = db.delete(CodeEntry.TABLE_NAME, null, null) > 0;
+            /*Get the context which is this activity*/
+        Context context = HabbitActivity.this;
+        /*then delete the database*/
+        context.deleteDatabase("code.db");
+        mCodeDbHelper = new CodeDbHelper(this);
     }
 
     @Override
@@ -131,7 +141,8 @@ public class CatalogActivity extends AppCompatActivity {
                 return true;
             // Respond to a click on the "Delete all entries" menu option
             case R.id.action_delete_all_entries:
-                // Do nothing for now
+                deleteDataBase();
+                displayDatabaseInfo();
                 return true;
         }
         return super.onOptionsItemSelected(item);
